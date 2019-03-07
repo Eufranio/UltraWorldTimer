@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        maven {
+            name = 'forge'
+            url = 'https://files.minecraftforge.net/maven'
+        }
+    }
+
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+
+plugins {
+    id 'org.spongepowered.plugin' version '0.9.0'
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+group = pluginGroup
+version = pluginVersion
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+    compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
+    compile files('Pixelmon-1.12.2-7.0.0-server-deobf.jar')
+    shade 'com.j256.ormlite:ormlite-jdbc:4.48'
+    shade 'com.j256.ormlite:ormlite-core:4.48'
+}
+
+minecraft {
+    forgeVersion = '1.12.2-14.23.5.2808'
+    mappings = 'stable_39'
+}
+
+jar {
+    includeEmptyDirs = false
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            exclude 'META-INF', 'META-INF/**'
+        }
+    }
+}
+
+sponge.plugin.id = pluginId
